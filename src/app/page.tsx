@@ -118,13 +118,23 @@ export default function Home() {
           {/* Background Image */}
           <motion.div
             initial={{ opacity: 0, scale: 1.2 }}
-            animate={{ opacity: 0.4, scale: 1 }}
+            animate={{ opacity: 0.3, scale: 1 }}
             transition={{ duration: 2, ease: "easeOut" }}
             className="absolute inset-0 z-0"
           >
             <Image
-              src={currentSlide === 0 ? "/images/1.jpg" : currentSlide === 1 ? "/images/2.jpg" : `/images/${currentSlide + 1}.jpg`}
-              alt={currentSlide === 0 ? "Beautiful Vaishu" : currentSlide === 1 ? "Special moment" : `Background ${currentSlide + 1}`}
+              src={currentSlide === 0 ? "/images/main-pic.jpg" : 
+                   currentSlide === 1 ? "/images/slide-2.jpg" :
+                   currentSlide === 2 ? "/images/slide-3.jpg" :
+                   currentSlide === 3 ? "/images/slide-4.jpg" :
+                   currentSlide === 4 ? "/images/slide-5.jpg" :
+                   `/images/slide-${currentSlide + 1}.jpg`}
+              alt={currentSlide === 0 ? "Beautiful Vaishu" : 
+                   currentSlide === 1 ? "Special moment" :
+                   currentSlide === 2 ? "Birthday wishes" :
+                   currentSlide === 3 ? "Happy birthday" :
+                   currentSlide === 4 ? "Peaceful thoughts" :
+                   `Background ${currentSlide + 1}`}
               fill
               className="object-cover blur-sm"
               priority
@@ -134,10 +144,20 @@ export default function Home() {
               }}
               onError={(e: any) => {
                 console.log('Image failed to load:', e);
-                // Don't hide the image, let it show as broken or try fallback
+                // Fallback: try to load a default gradient
+                const parent = e.target.parentElement;
+                if (parent) {
+                  parent.style.background = 'linear-gradient(135deg, #e6d7ff 0%, #f3e7ff 50%, #ffeaf0 100%)';
+                }
               }}
               onLoad={() => {
-                console.log('Image loaded successfully:', currentSlide === 0 ? "/images/1.jpg" : currentSlide === 1 ? "/images/2.jpg" : `/images/${currentSlide + 1}.jpg`);
+                console.log('Image loaded successfully:', 
+                  currentSlide === 0 ? "/images/main-pic.jpg" : 
+                  currentSlide === 1 ? "/images/slide-2.jpg" :
+                  currentSlide === 2 ? "/images/slide-3.jpg" :
+                  currentSlide === 3 ? "/images/slide-4.jpg" :
+                  currentSlide === 4 ? "/images/slide-5.jpg" :
+                  `/images/slide-${currentSlide + 1}.jpg`);
               }}
             />
           </motion.div>
@@ -175,11 +195,18 @@ export default function Home() {
                   className="mb-6 flex justify-center"
                 >
                   <Image
-                    src="/images/2.jpg"
+                    src="/images/slide-2.jpg"
                     alt="Special moment"
                     width={200}
                     height={150}
                     className="rounded-2xl shadow-lg object-cover"
+                    onError={(e: any) => {
+                      console.log('Additional image failed to load:', e);
+                      e.target.style.display = 'none';
+                    }}
+                    onLoad={() => {
+                      console.log('Additional image loaded successfully: /images/slide-2.jpg');
+                    }}
                   />
                 </motion.div>
               )}

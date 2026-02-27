@@ -122,22 +122,24 @@ export default function Home() {
             transition={{ duration: 2, ease: "easeOut" }}
             className="absolute inset-0 z-0"
           >
-            {/* Fallback for missing images */}
-            {currentSlide === 0 ? (
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-200/50 to-pink-200/50 z-0" />
-            ) : (
-              <Image
-                src={currentSlide === 0 ? "/images/1.jpg" : `/images/${currentSlide + 1}.jpg`}
-                  alt={currentSlide === 0 ? "Beautiful Vaishu" : `Background ${currentSlide + 1}`}
-                  fill
-                  className="object-cover blur-sm"
-                  priority
-                  onError={(e: any) => {
-                    console.log('Image failed to load:', e);
-                    e.target.style.display = 'none';
-                  }}
-              />
-            )}
+            <Image
+              src={currentSlide === 0 ? "/images/1.jpg" : `/images/${currentSlide + 1}.jpg`}
+              alt={currentSlide === 0 ? "Beautiful Vaishu" : `Background ${currentSlide + 1}`}
+              fill
+              className="object-cover blur-sm"
+              priority
+              style={{
+                objectFit: 'cover',
+                objectPosition: 'center'
+              }}
+              onError={(e: any) => {
+                console.log('Image failed to load:', e);
+                // Don't hide the image, let it show the error state
+              }}
+              onLoad={() => {
+                console.log('Image loaded successfully:', currentSlide === 0 ? "/images/1.jpg" : `/images/${currentSlide + 1}.jpg`);
+              }}
+            />
           </motion.div>
 
           {/* Content Container */}

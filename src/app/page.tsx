@@ -123,8 +123,8 @@ export default function Home() {
             className="absolute inset-0 z-0"
           >
             <Image
-              src={currentSlide === 0 ? "/images/1.jpg" : `/images/${currentSlide + 1}.jpg`}
-              alt={currentSlide === 0 ? "Beautiful Vaishu" : `Background ${currentSlide + 1}`}
+              src={currentSlide === 0 ? "/images/1.jpg" : currentSlide === 1 ? "/images/2.jpg" : `/images/${currentSlide + 1}.jpg`}
+              alt={currentSlide === 0 ? "Beautiful Vaishu" : currentSlide === 1 ? "Special moment" : `Background ${currentSlide + 1}`}
               fill
               className="object-cover blur-sm"
               priority
@@ -134,10 +134,10 @@ export default function Home() {
               }}
               onError={(e: any) => {
                 console.log('Image failed to load:', e);
-                // Don't hide the image, let it show the error state
+                // Don't hide the image, let it show as broken or try fallback
               }}
               onLoad={() => {
-                console.log('Image loaded successfully:', currentSlide === 0 ? "/images/1.jpg" : `/images/${currentSlide + 1}.jpg`);
+                console.log('Image loaded successfully:', currentSlide === 0 ? "/images/1.jpg" : currentSlide === 1 ? "/images/2.jpg" : `/images/${currentSlide + 1}.jpg`);
               }}
             />
           </motion.div>

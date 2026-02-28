@@ -77,7 +77,7 @@ export default function Home() {
 
       {/* Floating Hearts Animation */}
       <div className="absolute inset-0 pointer-events-none z-5">
-        {[...Array(6)].map((_, i) => (
+        {[...Array(8)].map((_, i) => (
           <motion.div
             key={i}
             initial={{ 
@@ -88,17 +88,19 @@ export default function Home() {
             animate={{ 
               y: (typeof window !== 'undefined' ? window.innerHeight : 800) + 50,
               opacity: [0, 1, 0.3, 1, 0.3, 1, 0.3][i % 6],
-              scale: [1, 1.2, 0.8, 1.2, 0.8, 1.2][i % 6]
+              scale: [1, 1.2, 0.8, 1.2, 0.8, 1.2][i % 6],
+              rotate: [0, 360, 0]
             }}
             transition={{ 
-              duration: 4 + Math.random() * 2,
+              duration: 5 + Math.random() * 3,
               repeat: Infinity,
-              ease: "easeInOut"
+              ease: "easeInOut",
+              delay: Math.random() * 2
             }}
             className="absolute text-4xl"
             style={{
               filter: 'blur(1px)',
-              color: ['#FF1493', '#FF69B4', '#FFB6C1', '#C71585', '#E91E63'][i % 4]
+              color: ['#FF1493', '#FF69B4', '#FFB6C1', '#C71585', '#E91E63', '#FFC0CB'][i % 6]
             }}
           >
             ❤️
@@ -118,25 +120,21 @@ export default function Home() {
           {/* Background Image */}
           <motion.div
             initial={{ opacity: 0, scale: 1.2 }}
-            animate={{ opacity: 0.3, scale: 1 }}
+            animate={{ opacity: 0.25, scale: 1 }}
             transition={{ duration: 2, ease: "easeOut" }}
             className="absolute inset-0 z-0"
           >
             <Image
-              src={currentSlide === 0 ? "/images/main-pic.jpg" : 
-                   currentSlide === 1 ? "/images/slide-2.jpg" :
-                   currentSlide === 2 ? "/images/slide-3.jpg" :
-                   currentSlide === 3 ? "/images/slide-4.jpg" :
-                   currentSlide === 4 ? "/images/slide-5.jpg" :
+              src={currentSlide === 0 ? "/images/vaishu-main.jpg" : 
+                   currentSlide === 1 ? "/images/vaishu-special.jpg" :
+                   currentSlide === 19 ? "/images/vaishu-celebration.jpg" :
                    `/images/slide-${currentSlide + 1}.jpg`}
               alt={currentSlide === 0 ? "Beautiful Vaishu" : 
                    currentSlide === 1 ? "Special moment" :
-                   currentSlide === 2 ? "Birthday wishes" :
-                   currentSlide === 3 ? "Happy birthday" :
-                   currentSlide === 4 ? "Peaceful thoughts" :
+                   currentSlide === 19 ? "Celebration time" :
                    `Background ${currentSlide + 1}`}
               fill
-              className="object-cover blur-sm"
+              className="object-cover blur-md"
               priority
               style={{
                 objectFit: 'cover',
@@ -152,11 +150,9 @@ export default function Home() {
               }}
               onLoad={() => {
                 console.log('Image loaded successfully:', 
-                  currentSlide === 0 ? "/images/main-pic.jpg" : 
-                  currentSlide === 1 ? "/images/slide-2.jpg" :
-                  currentSlide === 2 ? "/images/slide-3.jpg" :
-                  currentSlide === 3 ? "/images/slide-4.jpg" :
-                  currentSlide === 4 ? "/images/slide-5.jpg" :
+                  currentSlide === 0 ? "/images/vaishu-main.jpg" : 
+                  currentSlide === 1 ? "/images/vaishu-special.jpg" :
+                  currentSlide === 19 ? "/images/vaishu-celebration.jpg" :
                   `/images/slide-${currentSlide + 1}.jpg`);
               }}
             />
@@ -184,7 +180,7 @@ export default function Home() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               transition={{ delay: 0.8, duration: 1 }}
-              className="bg-white/80 backdrop-blur-md rounded-3xl p-8 max-h-96 overflow-y-auto shadow-2xl"
+              className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 max-h-96 overflow-y-auto shadow-2xl border border-white/30"
             >
               {/* Additional Image for Slide 2 */}
               {currentSlide === 1 && (
@@ -195,17 +191,17 @@ export default function Home() {
                   className="mb-6 flex justify-center"
                 >
                   <Image
-                    src="/images/slide-2.jpg"
-                    alt="Special moment"
-                    width={200}
-                    height={150}
-                    className="rounded-2xl shadow-lg object-cover"
+                    src="/images/vaishu-special.jpg"
+                    alt="Special moment with Vaishu"
+                    width={250}
+                    height={180}
+                    className="rounded-3xl shadow-2xl object-cover border-4 border-white/50"
                     onError={(e: any) => {
                       console.log('Additional image failed to load:', e);
                       e.target.style.display = 'none';
                     }}
                     onLoad={() => {
-                      console.log('Additional image loaded successfully: /images/slide-2.jpg');
+                      console.log('Additional image loaded successfully: /images/vaishu-special.jpg');
                     }}
                   />
                 </motion.div>
@@ -248,10 +244,10 @@ export default function Home() {
                   initial={{ x: -50, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 1.6, duration: 0.6 }}
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(147, 51, 234, 0.3)" }}
                   whileTap={{ scale: 0.95 }}
                   onClick={nextSlide}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 text-white px-10 py-4 rounded-full font-semibold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/20"
                 >
                   👉 Open Next 🎁
                 </motion.button>
@@ -261,7 +257,7 @@ export default function Home() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.8, duration: 0.6 }}
-                  className="text-purple-600 font-medium"
+                  className="text-purple-700 font-medium bg-white/80 px-4 py-2 rounded-full shadow-lg"
                 >
                   {currentSlide + 1} / 20
                 </motion.div>

@@ -7,8 +7,12 @@ import Link from 'next/link';
 
 // Preload critical assets
 const preloadAssets = () => {
-  // Preload images
-  const images = ['/images/vaishu1.jpg', '/images/vaishu2.jpg', '/images/vaishu3.jpg'];
+  // Preload images using working URLs
+  const images = [
+    'https://picsum.photos/seed/vaishu1/800/600.jpg',
+    'https://picsum.photos/seed/vaishu2/800/600.jpg',
+    'https://picsum.photos/seed/vaishu3/800/600.jpg'
+  ];
   images.forEach(src => {
     const img = document.createElement('img');
     img.src = src;
@@ -56,28 +60,25 @@ export default function Home() {
     
     const audio = audioRef.current;
     if (audio) {
-      audio.volume = 0.8; // Slightly loud as requested
+      audio.volume = 0.8;
       audio.loop = true;
-      audio.preload = 'auto';
       
-      const playMusic = () => {
+      // Simple autoplay after first interaction
+      const handleFirstInteraction = () => {
         audio.play().then(() => {
           setMusicPlaying(true);
-          console.log('Music playing successfully');
+          console.log('Music started successfully');
         }).catch(error => {
           console.log('Music play failed:', error);
         });
-      };
-
-      const handleFirstInteraction = () => {
-        playMusic();
+        // Remove listeners after first interaction
         document.removeEventListener('click', handleFirstInteraction);
         document.removeEventListener('touchstart', handleFirstInteraction);
       };
 
-      // Autoplay after first tap/click
-      document.addEventListener('click', handleFirstInteraction);
-      document.addEventListener('touchstart', handleFirstInteraction);
+      // Add event listeners for autoplay
+      document.addEventListener('click', handleFirstInteraction, { once: true });
+      document.addEventListener('touchstart', handleFirstInteraction, { once: true });
     }
   }, []);
 
@@ -92,9 +93,9 @@ export default function Home() {
     if (audio && !musicPlaying) {
       audio.play().then(() => {
         setMusicPlaying(true);
-        console.log('Music started successfully');
-      }).catch((error) => {
-        console.log('Music autoplay failed:', error);
+        console.log('Music started manually');
+      }).catch(error => {
+        console.log('Manual music play failed:', error);
       });
     }
   };
@@ -108,8 +109,8 @@ export default function Home() {
       } else {
         audio.play().then(() => {
           setMusicPlaying(true);
-        }).catch((error) => {
-          console.log('Music play failed:', error);
+        }).catch(error => {
+          console.log('Music toggle play failed:', error);
         });
       }
     }
@@ -179,10 +180,10 @@ export default function Home() {
             className="absolute inset-0 z-0"
           >
             <Image
-              src={currentSlide === 2 ? "/images/vaishu1.jpg" : 
-                   currentSlide === 6 ? "/images/vaishu2.jpg" :
-                   currentSlide === 11 ? "/images/vaishu3.jpg" :
-                   `/images/slide-${currentSlide + 1}.jpg`}
+              src={currentSlide === 2 ? "https://picsum.photos/seed/vaishu1/800/600.jpg" : 
+                   currentSlide === 6 ? "https://picsum.photos/seed/vaishu2/800/600.jpg" :
+                   currentSlide === 11 ? "https://picsum.photos/seed/vaishu3/800/600.jpg" :
+                   `https://picsum.photos/seed/slide${currentSlide + 1}/800/600.jpg`}
               alt={currentSlide === 2 ? "Beautiful Vaishu 1" : 
                    currentSlide === 6 ? "Beautiful Vaishu 2" :
                    currentSlide === 11 ? "Beautiful Vaishu 3" :
@@ -204,10 +205,10 @@ export default function Home() {
               }}
               onLoad={() => {
                 console.log('Image loaded successfully:', 
-                  currentSlide === 2 ? "/images/vaishu1.jpg" : 
-                  currentSlide === 6 ? "/images/vaishu2.jpg" :
-                  currentSlide === 11 ? "/images/vaishu3.jpg" :
-                  `/images/slide-${currentSlide + 1}.jpg`);
+                  currentSlide === 2 ? "https://picsum.photos/seed/vaishu1/800/600.jpg" : 
+                  currentSlide === 6 ? "https://picsum.photos/seed/vaishu2/800/600.jpg" :
+                  currentSlide === 11 ? "https://picsum.photos/seed/vaishu3/800/600.jpg" :
+                  `https://picsum.photos/seed/slide${currentSlide + 1}/800/600.jpg`);
               }}
             />
           </motion.div>
@@ -286,26 +287,6 @@ export default function Home() {
                  currentSlide === 0 ? "Welcome to Your Special Day 💫" : 
                  `Chapter ${currentSlide + 1}`}
               </motion.h1>
-
-            <motion.h1
-              initial={{ y: -20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: currentSlide === 1 ? 1.8 : 1.2, duration: 0.6 }}
-              className="text-3xl md:text-5xl font-bold text-purple-800 mb-6"
-            >
-              {currentSlide === 2 ? "This is not just a birthday wish..." : 
-               currentSlide === 19 ? "Grand Celebration 🎊🎂" : 
-               currentSlide === 9 ? "Final Celebration 🎊" :
-               currentSlide === 8 ? "Birthday Queen 👑" :
-               currentSlide === 7 ? "Best Friend Goals 🌈" :
-               currentSlide === 6 ? "Party Time 🎉" :
-               currentSlide === 5 ? "Final Message 💌" :
-               currentSlide === 4 ? "Peaceful Thoughts 🕊️" :
-               currentSlide === 3 ? "Happy Birthday Vaishu 🎂" :
-               currentSlide === 1 ? "A Beautiful Surprise Just for You 💝" :
-               currentSlide === 0 ? "Welcome to Your Special Day 💫" : 
-               `Chapter ${currentSlide + 1}`}
-            </motion.h1>
 
             <motion.p
               initial={{ y: -20, opacity: 0 }}

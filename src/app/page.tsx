@@ -125,9 +125,9 @@ export default function Home() {
             className="absolute inset-0 z-0"
           >
             <Image
-              src={currentSlide === 0 ? "/images/vaishu-main.jpg" : 
-                   currentSlide === 1 ? "/images/vaishu-special.jpg" :
-                   currentSlide === 19 ? "/images/vaishu-celebration.jpg" :
+              src={currentSlide === 0 ? "/images/image-1.jpg" : 
+                   currentSlide === 1 ? "/images/image-2.jpg" :
+                   currentSlide === 19 ? "/images/image-3.jpg" :
                    `/images/slide-${currentSlide + 1}.jpg`}
               alt={currentSlide === 0 ? "Beautiful Vaishu" : 
                    currentSlide === 1 ? "Special moment" :
@@ -150,9 +150,9 @@ export default function Home() {
               }}
               onLoad={() => {
                 console.log('Image loaded successfully:', 
-                  currentSlide === 0 ? "/images/vaishu-main.jpg" : 
-                  currentSlide === 1 ? "/images/vaishu-special.jpg" :
-                  currentSlide === 19 ? "/images/vaishu-celebration.jpg" :
+                  currentSlide === 0 ? "/images/image-1.jpg" : 
+                  currentSlide === 1 ? "/images/image-2.jpg" :
+                  currentSlide === 19 ? "/images/image-3.jpg" :
                   `/images/slide-${currentSlide + 1}.jpg`);
               }}
             />
@@ -191,7 +191,7 @@ export default function Home() {
                   className="mb-6 flex justify-center"
                 >
                   <Image
-                    src="/images/vaishu-special.jpg"
+                    src="/images/image-2.jpg"
                     alt="Special moment with Vaishu"
                     width={250}
                     height={180}
@@ -201,7 +201,7 @@ export default function Home() {
                       e.target.style.display = 'none';
                     }}
                     onLoad={() => {
-                      console.log('Additional image loaded successfully: /images/vaishu-special.jpg');
+                      console.log('Additional image loaded successfully: /images/image-2.jpg');
                     }}
                   />
                 </motion.div>

@@ -5,6 +5,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 
+// Preload critical assets
+const preloadAssets = () => {
+  // Preload images
+  const images = ['/images/vaishu1.jpg', '/images/vaishu2.jpg', '/images/vaishu3.jpg'];
+  images.forEach(src => {
+    const img = document.createElement('img');
+    img.src = src;
+  });
+  
+  // Preload audio
+  const audio = document.createElement('audio');
+  audio.src = '/music.mp3';
+  audio.preload = 'auto';
+};
+
 const wishes = [
   "Hi Vaishu 💫 A tiny surprise is waiting for you…",
   "This is not just a birthday wish... It's something made… just for you ❤️",
@@ -36,14 +51,18 @@ export default function Home() {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
+    // Preload assets on mount
+    preloadAssets();
+    
     const audio = audioRef.current;
     if (audio) {
-      audio.volume = 0.7;
+      audio.volume = 0.8; // Slightly loud as requested
       audio.loop = true;
+      audio.preload = 'auto';
       
       const playMusic = () => {
         audio.play().then(() => {
-          setIsPlaying(true);
+          setMusicPlaying(true);
           console.log('Music playing successfully');
         }).catch(error => {
           console.log('Music play failed:', error);
@@ -56,6 +75,7 @@ export default function Home() {
         document.removeEventListener('touchstart', handleFirstInteraction);
       };
 
+      // Autoplay after first tap/click
       document.addEventListener('click', handleFirstInteraction);
       document.addEventListener('touchstart', handleFirstInteraction);
     }
@@ -159,13 +179,13 @@ export default function Home() {
             className="absolute inset-0 z-0"
           >
             <Image
-              src={currentSlide === 0 ? "/images/image-1.jpg" : 
-                   currentSlide === 1 ? "/images/image-2.jpg" :
-                   currentSlide === 19 ? "/images/image-3.jpg" :
+              src={currentSlide === 2 ? "/images/vaishu1.jpg" : 
+                   currentSlide === 6 ? "/images/vaishu2.jpg" :
+                   currentSlide === 11 ? "/images/vaishu3.jpg" :
                    `/images/slide-${currentSlide + 1}.jpg`}
-              alt={currentSlide === 0 ? "Beautiful Vaishu" : 
-                   currentSlide === 1 ? "Special moment" :
-                   currentSlide === 19 ? "Celebration time" :
+              alt={currentSlide === 2 ? "Beautiful Vaishu 1" : 
+                   currentSlide === 6 ? "Beautiful Vaishu 2" :
+                   currentSlide === 11 ? "Beautiful Vaishu 3" :
                    `Background ${currentSlide + 1}`}
               fill
               className="object-cover blur-md"
@@ -184,9 +204,9 @@ export default function Home() {
               }}
               onLoad={() => {
                 console.log('Image loaded successfully:', 
-                  currentSlide === 0 ? "/images/image-1.jpg" : 
-                  currentSlide === 1 ? "/images/image-2.jpg" :
-                  currentSlide === 19 ? "/images/image-3.jpg" :
+                  currentSlide === 2 ? "/images/vaishu1.jpg" : 
+                  currentSlide === 6 ? "/images/vaishu2.jpg" :
+                  currentSlide === 11 ? "/images/vaishu3.jpg" :
                   `/images/slide-${currentSlide + 1}.jpg`);
               }}
             />
@@ -246,30 +266,6 @@ export default function Home() {
               transition={{ delay: 0.8, duration: 1 }}
               className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 max-h-96 overflow-y-auto shadow-2xl border border-white/30"
             >
-              {/* Additional Image for Slide 2 */}
-              {currentSlide === 1 && (
-                <motion.div
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 1, duration: 0.8 }}
-                  className="mb-6 flex justify-center"
-                >
-                  <Image
-                    src="/images/image-2.jpg"
-                    alt="Special moment with Vaishu"
-                    width={250}
-                    height={180}
-                    className="rounded-3xl shadow-2xl object-cover border-4 border-white/50"
-                    onError={(e: any) => {
-                      console.log('Additional image failed to load:', e);
-                      e.target.style.display = 'none';
-                    }}
-                    onLoad={() => {
-                      console.log('Additional image loaded successfully: /images/image-2.jpg');
-                    }}
-                  />
-                </motion.div>
-              )}
 
               <motion.h1
                 initial={{ y: -20, opacity: 0 }}

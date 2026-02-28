@@ -30,8 +30,9 @@ const wishes = [
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [showFinalVideo, setShowFinalVideo] = useState(false);
   const [showFinalMessage, setShowFinalMessage] = useState(false);
+  const [musicPlaying, setMusicPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -66,8 +67,41 @@ export default function Home() {
     }
   };
 
-  const handleFinalVideoEnd = () => {
-    setShowFinalMessage(true);
+  const startMusic = () => {
+    const audio = audioRef.current;
+    if (audio && !musicPlaying) {
+      audio.play().then(() => {
+        setMusicPlaying(true);
+        console.log('Music started successfully');
+      }).catch((error) => {
+        console.log('Music autoplay failed:', error);
+      });
+    }
+  };
+
+  const toggleMusic = () => {
+    const audio = audioRef.current;
+    if (audio) {
+      if (musicPlaying) {
+        audio.pause();
+        setMusicPlaying(false);
+      } else {
+        audio.play().then(() => {
+          setMusicPlaying(true);
+        }).catch((error) => {
+          console.log('Music play failed:', error);
+        });
+      }
+    }
+  };
+
+  const stopMusic = () => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+      setMusicPlaying(false);
+    }
   };
 
   return (
@@ -165,11 +199,41 @@ export default function Home() {
             transition={{ delay: 0.5, duration: 0.8 }}
             className="relative z-10 max-w-4xl mx-auto text-center"
           >
+            {/* Music Control Button */}
+            <motion.button
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 2, duration: 0.5 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={toggleMusic}
+              className="fixed top-4 right-4 z-50 bg-white/80 backdrop-blur-md p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              <div className="text-2xl">
+                {musicPlaying ? '🔇' : '🎵'}
+              </div>
+            </motion.button>
+
+            {/* Start Music Prompt (only show if music not playing) */}
+            {!musicPlaying && currentSlide === 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 3, duration: 0.6 }}
+                className="fixed bottom-4 left-4 z-50 bg-purple-600 text-white px-4 py-2 rounded-full shadow-lg cursor-pointer hover:bg-purple-700 transition-colors"
+                onClick={startMusic}
+              >
+                <span className="flex items-center gap-2">
+                  � <span className="text-sm">Play Birthday Music</span>
+                </span>
+              </motion.div>
+            )}
+
             {/* Gift Unwrap Animation */}
             <motion.div
-              initial={{ rotateY: 0 }}
-              animate={{ rotateY: 360 }}
-              transition={{ duration: 1, ease: "easeInOut" }}
+              initial={{ scale: 0, rotate: 0 }}
+              animate={{ scale: 1, rotate: 360 }}
+              transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
               className="mb-8"
             >
               <div className="text-6xl">🎁</div>
@@ -227,122 +291,170 @@ export default function Home() {
                  `Chapter ${currentSlide + 1}`}
               </motion.h1>
 
-              <motion.p
-                initial={{ y: -20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 1.4, duration: 0.6 }}
-                className="text-lg md:text-xl text-purple-700 leading-relaxed whitespace-pre-wrap"
+            <motion.h1
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: currentSlide === 1 ? 1.8 : 1.2, duration: 0.6 }}
+              className="text-3xl md:text-5xl font-bold text-purple-800 mb-6"
+            >
+              {currentSlide === 2 ? "This is not just a birthday wish..." : 
+               currentSlide === 19 ? "Grand Celebration 🎊🎂" : 
+               currentSlide === 9 ? "Final Celebration 🎊" :
+               currentSlide === 8 ? "Birthday Queen 👑" :
+               currentSlide === 7 ? "Best Friend Goals 🌈" :
+               currentSlide === 6 ? "Party Time 🎉" :
+               currentSlide === 5 ? "Final Message 💌" :
+               currentSlide === 4 ? "Peaceful Thoughts 🕊️" :
+               currentSlide === 3 ? "Happy Birthday Vaishu 🎂" :
+               currentSlide === 1 ? "A Beautiful Surprise Just for You 💝" :
+               currentSlide === 0 ? "Welcome to Your Special Day 💫" : 
+               `Chapter ${currentSlide + 1}`}
+            </motion.h1>
+
+            <motion.p
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 1.4, duration: 0.6 }}
+              className="text-lg md:text-xl text-purple-700 leading-relaxed whitespace-pre-wrap"
+            >
+              {wishes[currentSlide]}
+            </motion.p>
+          </motion.div>
+
+          {/* Navigation Button */}
+          {currentSlide < 19 && (
+            <motion.div className="flex gap-4 justify-center mt-8">
+              <motion.button
+                initial={{ x: -50, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 1.6, duration: 0.6 }}
+                whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(147, 51, 234, 0.3)" }}
+                whileTap={{ scale: 0.95 }}
+                onClick={nextSlide}
+                className="bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 text-white px-10 py-4 rounded-full font-semibold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/20"
               >
-                {wishes[currentSlide]}
-              </motion.p>
-            </motion.div>
+                👉 Open Next 🎁
+              </motion.button>
 
-            {/* Navigation Button */}
-            {currentSlide < 19 && (
-              <motion.div className="flex gap-4 justify-center mt-8">
-                <motion.button
-                  initial={{ x: -50, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 1.6, duration: 0.6 }}
-                  whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(147, 51, 234, 0.3)" }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={nextSlide}
-                  className="bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 text-white px-10 py-4 rounded-full font-semibold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/20"
-                >
-                  👉 Open Next 🎁
-                </motion.button>
-
-                {/* Progress Indicator */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.8, duration: 0.6 }}
-                  className="text-purple-700 font-medium bg-white/80 px-4 py-2 rounded-full shadow-lg"
-                >
-                  {currentSlide + 1} / 20
-                </motion.div>
-              </motion.div>
-            )}
-
-            {/* Final Slide Special Content */}
-            {currentSlide === 19 && (
+              {/* Progress Indicator */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 2, duration: 1 }}
-                className="mt-8"
+                transition={{ delay: 1.8, duration: 0.6 }}
+                className="text-purple-700 font-medium bg-white/80 px-4 py-2 rounded-full shadow-lg"
               >
-                {!showFinalMessage ? (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ duration: 0.8 }}
-                    className="text-4xl font-bold text-purple-800"
-                  >
-                    Made with ❤️ for you
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.5, duration: 1 }}
-                    className="text-2xl font-semibold text-purple-700"
-                  >
-                    Wait… One last thing 🎁
-                  </motion.div>
-                )}
+                {currentSlide + 1} / 20
+              </motion.div>
+            </motion.div>
+          )}
 
-                {/* Final Video */}
-                <motion.video
+          {/* Final Slide Special Content */}
+          {currentSlide === 19 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 2, duration: 1 }}
+              className="mt-8"
+            >
+              {!showFinalVideo && (
+                <motion.button
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 2.5, duration: 0.5 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    stopMusic();
+                    setShowFinalVideo(true);
+                  }}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-xl hover:shadow-2xl transition-all duration-300"
+                >
+                  Wait… One last thing 🎁
+                </motion.button>
+              )}
+
+              {showFinalVideo && (
+                <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 1, duration: 1 }}
-                  autoPlay
-                  muted
-                  onEnded={handleFinalVideoEnd}
-                  className="w-full max-w-2xl mx-auto rounded-2xl shadow-2xl mt-6"
-                  controls={false}
+                  transition={{ duration: 0.8 }}
+                  className="w-full max-w-4xl mx-auto"
                 >
-                  <source src="/final.mp4" type="video/mp4" />
-                </motion.video>
-              </motion.div>
-            )}
+                  <video
+                    autoPlay
+                    controls={false}
+                    className="w-full h-auto rounded-2xl shadow-2xl"
+                    onEnded={() => setShowFinalMessage(true)}
+                  >
+                    <source src="/final.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </motion.div>
+              )}
 
-            {/* Confetti for Final Slides */}
-            {(currentSlide === 9 || currentSlide === 19) && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="absolute inset-0 pointer-events-none z-20"
-              >
-                {[...Array(50)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ 
-                      x: Math.random() * window.innerWidth - window.innerWidth/2,
-                      y: -50,
-                      rotate: 0,
-                      opacity: 1
-                    }}
-                    animate={{ 
-                      y: window.innerHeight + 50,
-                      rotate: Math.random() * 360,
-                      opacity: 0
-                    }}
-                    transition={{ 
-                      duration: 3 + Math.random() * 2,
-                      delay: Math.random() * 2,
-                      ease: "linear"
-                    }}
-                    className="absolute w-3 h-3"
-                    style={{
-                      backgroundColor: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD'][Math.floor(Math.random() * 6)]
-                    }}
-                  />
-                ))}
-              </motion.div>
-            )}
+              {showFinalMessage && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8 }}
+                  className="text-center"
+                >
+                  <motion.h1
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.3, duration: 0.5 }}
+                    className="text-4xl md:text-6xl font-bold text-purple-800 mb-4"
+                  >
+                    Made with ❤️ for you
+                  </motion.h1>
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8, duration: 0.6 }}
+                    className="text-xl md:text-2xl text-purple-600"
+                  >
+                    Happy Birthday, Vaishu! �✨
+                  </motion.p>
+                </motion.div>
+              )}
+            </motion.div>
+          )}
           </motion.div>
+
+          {/* Confetti for Final Slides */}
+          {(currentSlide === 9 || currentSlide === 19) && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="absolute inset-0 pointer-events-none z-20"
+            >
+              {[...Array(50)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ 
+                    x: Math.random() * window.innerWidth - window.innerWidth/2,
+                    y: -50,
+                    rotate: 0,
+                    opacity: 1
+                  }}
+                  animate={{ 
+                    y: window.innerHeight + 50,
+                    rotate: Math.random() * 360,
+                    opacity: 0
+                  }}
+                  transition={{ 
+                    duration: 3 + Math.random() * 2,
+                    delay: Math.random() * 2,
+                    ease: "linear"
+                  }}
+                  className="absolute w-3 h-3"
+                  style={{
+                    backgroundColor: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD'][Math.floor(Math.random() * 6)]
+                  }}
+                />
+              ))}
+            </motion.div>
+          )}
         </motion.div>
       </AnimatePresence>
     </div>
